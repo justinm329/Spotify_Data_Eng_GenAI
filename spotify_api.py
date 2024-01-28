@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 from snowflake.connector.pandas_tools import write_pandas
 from utils.sf_conn import Config
+from json.decoder import JSONDecodeError
 import time
 
 ### these are the api keys that we will use
@@ -44,12 +45,10 @@ payload = {
 
 auth_response = requests.post(auth_url, headers=headers, data=payload)
 auth_response_data = auth_response.json()
+print(auth_response_data)
 access_token = auth_response_data['access_token']
 
-# # Step 2: Make API Request with the Access Token
-# api_headers = {
-#     "Authorization": "Bearer " + access_token
-# }
+
 
 
 ########### Main Functions used to Extract Data from Spotifys API #########################
@@ -65,8 +64,6 @@ class Spotify():
         url = f"https://api.spotify.com/v1/artists/{artist_id}"
         headers = {'Authorization': f'Bearer {self.access_token}'}
         response = requests.get(url, headers=headers)
-        print(response.status_code)
-        print(response.headers)
 
         if response.status_code == 200:
             artist_data = response.json()
@@ -78,29 +75,58 @@ class Spotify():
     def get_playlist_name_tracks(self, playlist_ids):
         all_playlists_data = []
         for ids in playlist_ids:
-            # Get the playlists name
+            # Get the playlist's name
             url = f"https://api.spotify.com/v1/playlists/{ids}"
             headers = {'Authorization': f'Bearer {self.access_token}'}
             name_response = requests.get(url, headers=headers)
-            playlist_name = name_response.json().get("name")
-            # get the track_ids
 
-            url = f'https://api.spotify.com/v1/playlists/{ids}/tracks'
-            headers = {'Authorization': f'Bearer {self.access_token}'}
-            track_id_response = requests.get(url, headers=headers)
-            print(track_id_response.headers)
-            print(track_id_response.status_code)
-            if track_id_response.status_code == 200:
+            # Check the response status and decode JSON
+            if name_response.status_code != 200:
+                print(f"Failed to fetch playlist name for {ids}: {name_response.status_code}")
+                continue
+            try:
+                playlist_name = name_response.json().get("name", "Unknown Playlist")
+            except JSONDecodeError:
+                print(f"JSON decoding failed for playlist name {ids}")
+                continue
 
-                track_response = track_id_response.json()
-                tracks_data = track_response['tracks']
-                for item in tracks_data['items']:
-                    if item['track'] is not None:
-                        track_id = item['track']['id']
-                        track_name = item['track']['name']
-                        artist_names = ', '.join(artist['name'] for artist in item['track']['artists'])
-                        artist_id = ', '.join(artist['id'] for artist in item['track']['artists'])
-                        genres_list = [self.get_artist_genres(artist['id']) for artist in item['track']['artists']]
+            # Initialize pagination variables
+            limit = 50
+            offset = 0
+            total_tracks = None
+
+            # Loop through the paginated endpoint until all tracks have been fetched
+            while total_tracks is None or offset < total_tracks:
+                # Get the playlist's tracks
+                tracks_url = f'https://api.spotify.com/v1/playlists/{ids}/tracks?limit={limit}&offset={offset}'
+                track_response = requests.get(tracks_url, headers=headers)
+    
+
+                
+                if track_response.status_code != 200:
+                    print(f"Failed to fetch tracks for playlist {ids}: {track_response.status_code}")
+                    break
+                try:
+                    track_data = track_response.json()
+
+                    #print(track_data)
+                except JSONDecodeError:
+                    print(f"JSON decoding failed for tracks in playlist {ids}")
+                    break
+
+                # Update the total tracks count (only once)
+                if total_tracks is None:
+                    total_tracks = track_data.get('total', 0)
+                
+                # Process each track
+                for item in track_data.get('tracks', {}).get('items', []):
+                    track = item.get('track')
+                    if track:
+                        track_id = track.get('id')
+                        track_name = track.get('name')
+                        artist_names = ', '.join(artist.get('name', '') for artist in track.get('artists', []))
+                        artist_ids = ', '.join(artist.get('id', '') for artist in track.get('artists', []))
+                        genres_list = [self.get_artist_genres(artist_id) for artist_id in artist_ids.split(', ')]
                         genres = '; '.join(genres_list)
 
                         all_playlists_data.append({
@@ -108,13 +134,16 @@ class Spotify():
                             "Playlist_Name": playlist_name,
                             'Track_Name': track_name,
                             "Artist_Names": artist_names,
-                            "artist_id":artist_id,
+                            "Artist_Id": artist_ids,
                             "Track_Id": track_id,
                             "Genres": genres
                         })
-            else:
-                raise Exception(f"Error in API request: {track_id_response.status_code}")
-        playlist_df = pd.DataFrame(all_playlists_data)
+                    
+                # Increment the offset for the next page of results
+                offset += limit
+
+        # Create a DataFrame from the collected data
+            playlist_df = pd.DataFrame(all_playlists_data)
         return playlist_df
 
     def get_track_information(self, track_ids):
@@ -157,9 +186,8 @@ class Spotify():
             url = f"https://api.spotify.com/v1/audio-features/{id}"
             headers = {'Authorization': f'Bearer {self.access_token}'}
             response = requests.get(url, headers=headers)
-            #track = response.json()
-            print(response.headers)
-            print(response.status_code)
+
+
             if response.status_code == 200:
                     track = response.json()
 
@@ -180,24 +208,7 @@ class Spotify():
 
                     }
                     track_audio_features.append(audio_data)
-            elif response.status_code == 429:
-                    # response.header['retry_after']
-                    audio_data = {
-                        'Track_id': id,
-                        'danceability': track['danceability'],
-                        'duration_ms': track['duration_ms'],
-                        'energy': track['energy'],
-                        'instrumentalness': track['instrumentalness'],
-                        'key': track['key'],
-                        'liveness': track['liveness'],
-                        'loudness': track['loudness'],
-                        'mode': track['mode'],
-                        'speechiness': track['speechiness'],
-                        'time_signature':track['time_signature'],
-                        'track_uri': track['uri']
 
-                    }
-                    track_audio_features.append(audio_data)
             else:
                 raise Exception(f"Error in API request: {response.status_code}")
         track_audio_features_df = pd.DataFrame(track_audio_features)
@@ -218,7 +229,7 @@ def write_to_sf(access_token, playlist_ids):
     #write_pandas(sf_conn, playlist_df, "ALL_PLAYLISTS", auto_create_table = True)
     config.drop_and_recreate(sf_conn, playlist_df, "RAW_ALL_PLAYLISTS")
     config.drop_and_recreate(sf_conn, track_information, "RAW_TRACK_INFORMATION")
-    config.drop_and_recreate(sf_conn, audio_features_df, "RAWAUDIO_FEATURES")
+    config.drop_and_recreate(sf_conn, audio_features_df, "RAW_AUDIO_FEATURES")
     write_pandas(sf_conn, playlist_df, "RAW_History_of_Playlists",  auto_create_table = True)
     write_pandas(sf_conn, audio_features_df, "RAW_History_of_Audio_Features",  auto_create_table = True)
     write_pandas(sf_conn, track_information, "RAW_History_of_Track_Information",  auto_create_table = True)

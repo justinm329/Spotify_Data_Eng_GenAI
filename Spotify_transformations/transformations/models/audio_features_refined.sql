@@ -31,7 +31,7 @@
 -- Model Varaibles and configuration settings
 -- ##########################################################################
 
-{%- set base_table_audio_features = 'audio_features' -%}
+{%- set base_table_audio_features = 'rawaudio_features' -%}
 
 {{ config(
     enabled = true, 

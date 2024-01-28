@@ -26,7 +26,7 @@
 -- Model Varaibles and configuration settings
 -- ##########################################################################
 
-{%- set base_table_playlists = 'all_playlists' -%}
+{%- set base_table_playlists = 'raw_all_playlists' -%}
 
 
 {{ config(materialized='table') }}
@@ -38,8 +38,9 @@ with playlist_data as (
         "Playlist_Name" as playlist_name,
         "Track_Name" as track_name,
         "Artist_Names" as artists,
-        "artist_id" as artists_id,
-        "Track_Id" as track_id
+        "Artist_Id" as artists_id,
+        "Track_Id" as track_id,
+        "Genres" as genres
 
     from  {{base_table_playlists}}
 
