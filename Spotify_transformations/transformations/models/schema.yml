@@ -40,6 +40,17 @@ models:
       - name: time_signature
       - name: tack_uri
   
+  - name: track_information_refined
+    description: 'This model is being renamed from the raw model track information which was dumped in from the spotify api'
+    columns:
+      - name: track_id
+        tests:
+          - not_null
+          - unique
+      - name: track_name
+      - name: track_popularity
+      - name: tack_uri
+  
   - name: main_spotify
     description: 'This model is created from the refined models'
     tests:
@@ -72,5 +83,10 @@ sources:
     database: analytics_justin
     schema: spotify_schema
     tables:
-      - name: all_playlists
-      - name: audio_features
+      - name: raw_all_playlists
+      - name: rawaudio_features
+      - name: raw_track_information
+      - name: all_playlists_refined
+      - name: audio_features_refined
+      - name: track_information_refined
+      - name: main_spotify

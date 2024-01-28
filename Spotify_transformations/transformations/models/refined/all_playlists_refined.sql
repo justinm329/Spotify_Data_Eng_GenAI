@@ -29,7 +29,8 @@
 {%- set base_table_playlists = 'raw_all_playlists' -%}
 
 
-{{ config(materialized='table') }}
+{{ config(enabled = true,
+    materialized='table') }}
 
 with playlist_data as (
 

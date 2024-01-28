@@ -40,6 +40,7 @@ with
             p.playlist_id,
             p.playlist_name,
             p.track_name,
+            i.track_popularity,
             p.artists,
             a.danceability,
             a.duration_ms,
@@ -51,8 +52,9 @@ with
             a.speechiness
 
         from {{ref("all_playlists_refined")}} p
-        inner join {{ref("audio_features_refined")}} a
-        on p.track_id = a.track_id
+        inner join {{ref("audio_features_refined")}} a on p.track_id = a.track_id
+        inner join {{ref('track_information_refined')}} i on p.track_id = i.track_id
+        
     )
 
 
