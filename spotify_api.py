@@ -6,6 +6,7 @@ import base64
 import json
 import numpy as np
 import pandas as pd
+import pyarrow
 from snowflake.connector.pandas_tools import write_pandas
 from utils.sf_conn import Config
 from json.decoder import JSONDecodeError
@@ -45,7 +46,7 @@ payload = {
 
 auth_response = requests.post(auth_url, headers=headers, data=payload)
 auth_response_data = auth_response.json()
-print(auth_response_data)
+# print(auth_response_data)
 access_token = auth_response_data['access_token']
 
 
@@ -153,8 +154,8 @@ class Spotify():
             headers = {'Authorization': f'Bearer {self.access_token}'}
             response = requests.get(url, headers=headers)
            # track_data = response.json()
-            print(response.status_code)
-            print(response.headers)
+            # print(response.status_code)
+            # print(response.headers)
             # Check if the response status code indicates success
             if response.status_code == 200:
                 try:

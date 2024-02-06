@@ -104,10 +104,6 @@ sources:
     database: analytics_justin
     schema: spotify_schema
     tables:
-      - name: raw_all_playlists
-      - name: rawaudio_features
-      - name: raw_track_information
-      - name: RAW_History_of_Playlists
       - name: all_playlists_refined
       - name: audio_features_refined
       - name: track_information_refined
