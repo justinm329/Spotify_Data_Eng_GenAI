@@ -26,7 +26,7 @@
 -- Model Varaibles and configuration settings
 -- ##########################################################################
 
-
+{%- set raw_history_playlists = ' "RAW_History_of_Playlists" ' -%}
 
 {{ config(enabled = true,
     materialized='table') }}
@@ -43,7 +43,7 @@ with playlist_data as (
         "Genres" as genres,
         current_date() as refreshed_date
 
-    from {{ source('spotify_schema', 'RAW_History_of_Playlists') }}
+    from {{ raw_history_playlists }}
 
 )
 

@@ -31,7 +31,7 @@
 -- Model Varaibles and configuration settings
 -- ##########################################################################
 
-{%- set base_table_audio_features = 'rawaudio_features' -%}
+{%- set base_table_audio_features = 'raw_audio_features' -%}
 
 {{ config(
     enabled = true, 

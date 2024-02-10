@@ -42,6 +42,7 @@ with
             p.track_name,
             i.track_popularity,
             p.artists,
+            p.genres,
             a.danceability,
             a.duration_ms,
             a.energy,
