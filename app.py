@@ -36,8 +36,7 @@ def wait_until_run_status_completed(assistant, run_id, progress_placeholder):
 
 ### Load in Spotify Assistant Class
 assistant = Spotify_Assistant(assistant_id='asst_afQAdlE40WllyVRI7mDZBjha')
-#assistant.upload_csv_file('assistant_data/spotify_main_file')
-
+#assistant.upload_csv_file('assistant_data/spotify_main_file') THIS NEEDS TO GET FIGURED OUT IN A LATER RELEASE, right now it will upload a file for every question asked
 ## Add in Steamlit front end
 # Display text
 #st.title('SASS')

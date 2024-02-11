@@ -18,12 +18,21 @@ class Spotify_Assistant():
 
     
     def upload_csv_file(self, file_path):
+        # #List existing files
+        # existing_files = self.client.files.list()
+
+        # #Find and delete the file(s) related to 'assistants' purpose
+        # for existing_file in existing_files:
+        #     if existing_file.purpose == 'assistants':
+        #         self.client.files.delete(existing_file.id)
+
         with open(file_path, "rb") as file:
             uploaded_file = self.client.files.create(
                 file=file,
                 purpose='assistants'
             )
-        # add to assistant
+
+       # add to assistant
         add_file_to_assistant = self.client.beta.assistants.files.create(
             assistant_id = self.assistant_id,
             file_id = uploaded_file.id
