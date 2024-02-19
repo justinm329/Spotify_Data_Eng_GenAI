@@ -34,9 +34,26 @@ def wait_until_run_status_completed(assistant, run_id, progress_placeholder):
             progress_placeholder.text(f"Unexpected status: {status}.")
             break
 
+
+#### create function ot uplod the file to the assistant and cache it so it does not keep uploading when interacting with the app
 ### Load in Spotify Assistant Class
 assistant = Spotify_Assistant(assistant_id='asst_afQAdlE40WllyVRI7mDZBjha')
-#assistant.upload_csv_file('assistant_data/spotify_main_file') THIS NEEDS TO GET FIGURED OUT IN A LATER RELEASE, right now it will upload a file for every question asked
+@st.cache_data()
+def upload_csv_file(file_path):
+    
+    with open(file_path, "rb") as file:
+        uploaded_file = assistant.client.files.create(
+            file=file,
+            purpose='assistants'
+        )
+
+    # add to assistant
+    add_file_to_assistant = assistant.client.beta.assistants.files.create(
+        assistant_id = assistant.assistant_id,
+        file_id = uploaded_file.id
+    )
+    return add_file_to_assistant.id
+upload_csv_file('assistant_data/spotify_main_file') #THIS NEEDS TO GET FIGURED OUT IN A LATER RELEASE, right now it will upload a file for every question asked
 ## Add in Steamlit front end
 # Display text
 #st.title('SASS')

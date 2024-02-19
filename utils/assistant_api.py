@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from utils.prompt import PROMPT
 from openai import OpenAI
 import pandas as pd
+import streamlit as st
 import pyarrow
 
 
@@ -16,7 +17,7 @@ class Spotify_Assistant():
         self.thread = self.client.beta.threads.create() if not thread_id else self.client.beta.threads.retrieve(thread_id)
         self.assistant_id = assistant_id
 
-    
+    # @st.cache_data()
     def upload_csv_file(self, file_path):
         # #List existing files
         # existing_files = self.client.files.list()
