@@ -3,6 +3,5 @@ snowflake-connector-python
 pandas
 openai
 numpy
-time
 pyarrow
 requests

@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import snowflake.connector as sfc
 from snowflake.connector.pandas_tools import write_pandas
 import json
+import streamlit as st
 
 
 _ = load_dotenv()
@@ -11,14 +12,14 @@ class Config():
 
     def __init__(self):
          
-         self.sf_username = os.getenv('SF_USERNAME')
-         self.sf_password = os.getenv('SF_PASSWORD')
-         self.sf_account = os.getenv('SF_ACCOUNT')
+         self.sf_user = st.secrets["SF_USER"]
+         self.sf_password = st.secrets["SF_PASSWORD"]
+         self.sf_account = st.secrets['SF_ACCOUNT']
 
 
     def create_sf_conn(self,
-                    wh='AI_WH',
-                    r='DATA_ENG',
+                    wh='COMPUTE_WH',
+                    r='DATA_ENGINEER',
                     keep_alive=False):
         conn = sfc.connect(
                 user = self.sf_username,
