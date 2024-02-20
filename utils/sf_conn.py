@@ -1,12 +1,12 @@
 import os
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 import snowflake.connector as sfc
 from snowflake.connector.pandas_tools import write_pandas
 import json
 import streamlit as st
 
 
-_ = load_dotenv()
+# _ = load_dotenv()
 
 class Config():
 
