@@ -1,13 +1,10 @@
 import os
-from dotenv import load_dotenv
 from utils.prompt import PROMPT
 from openai import OpenAI
 import pandas as pd
 import streamlit as st
 import pyarrow
 
-
-load_dotenv()
 
 
 class Spotify_Assistant():
