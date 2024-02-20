@@ -1,4 +1,3 @@
-python-dotenv
 snowflake
 snowflake-connector-python
 pandas
