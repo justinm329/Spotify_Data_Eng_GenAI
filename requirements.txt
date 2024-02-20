@@ -1,4 +1,3 @@
-snowflake
 snowflake-connector-python
 pandas
 openai
