@@ -1,5 +1,5 @@
 import os
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 import snowflake.connector as sfc
 from snowflake.connector.pandas_tools import write_pandas
 import json
@@ -12,9 +12,12 @@ class Config():
 
     def __init__(self):
          
-         self.sf_user = st.secrets["SF_USER"]
-         self.sf_password = st.secrets["SF_PASSWORD"]
-         self.sf_account = st.secrets['SF_ACCOUNT']
+        #  self.sf_username = st.secrets["SF_USER"]
+        #  self.sf_password = st.secrets["SF_PASSWORD"]
+        #  self.sf_account = st.secrets['SF_ACCOUNT']
+         self.sf_username = os.getenv("SF_USERNAME")
+         self.sf_password = os.getenv("SF_PASSWORD")
+         self.sf_account = os.getenv('SF_ACCOUNT')
 
 
     def create_sf_conn(self,
