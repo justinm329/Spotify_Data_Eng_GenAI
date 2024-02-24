@@ -1,5 +1,6 @@
 # Spotify_Data_Eng_GenAI
-This project encapsulates data engineering and GenAI to recommend songs
+
+Got inspired and built a cool Generative AI app for all of us music lovers out there! You know how you can get stuck listening to the same playlists or artists on repeat? And how a live music festival's diverse lineup always introduces you to new beats? Yeah, I wanted to bring a bit of that magic into our daily lives. So, I created this app where you and your friends can share your favorite playlists, tell the AI how you're feeling or what's going on, and it'll throw back song suggestions that match your vibe. The goal? To get you vibing to new genres, artists, and tracks by tapping into the details of your mood or the scene you're in. It's all about making discovering fresh tunes as easy and tailored to you as possible.
 
 ## Downloading DBT
 
