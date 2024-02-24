@@ -29,7 +29,8 @@ spotify_playlist_ids = ['37i9dQZF1EQp9BVPsNVof1?si=b0e0182f48ea461c'
                 "37i9dQZF1DX0AMssoUKCz7?si=80092935821a4201",
                 '37i9dQZF1DX0hvSv9Rf41p?si=72b7f2562f0a4020',
                 "6FSFUWzuF2KigQDKV42Uru?si=cfc88421610b46c3",
-                '37i9dQZF1E35DbZEmy06Qp?si=b6e38bde3d8d4116']
+                '37i9dQZF1E35DbZEmy06Qp?si=b6e38bde3d8d4116',
+                '37i9dQZF1EIgtj4OvJCT7Q?si=d18338df81cc4ff1']
 
 # Encode Client ID and Client Secret
 client_creds = f"{client_id}:{client_secret}"
