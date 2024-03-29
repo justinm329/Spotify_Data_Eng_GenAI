@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "spotify-data-eng-genai"
+version = "0.1.0"
+description = ""
+authors = ["Justin Farnan <77633929+justinm329@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+snowflake-connector-python = "^3.7.1"
+pandas = "^2.2.1"
+openai = "^1.14.3"
+numpy = "^1.26.4"
+pyarrow = "^15.0.2"
+requests = "^2.31.0"
+python-dotenv = "^1.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

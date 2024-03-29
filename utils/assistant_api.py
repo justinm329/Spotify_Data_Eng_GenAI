@@ -16,13 +16,6 @@ class Spotify_Assistant():
 
     # @st.cache_data()
     def upload_csv_file(self, file_path):
-        # #List existing files
-        # existing_files = self.client.files.list()
-
-        # #Find and delete the file(s) related to 'assistants' purpose
-        # for existing_file in existing_files:
-        #     if existing_file.purpose == 'assistants':
-        #         self.client.files.delete(existing_file.id)
 
         with open(file_path, "rb") as file:
             uploaded_file = self.client.files.create(
@@ -35,8 +28,30 @@ class Spotify_Assistant():
             assistant_id = self.assistant_id,
             file_id = uploaded_file.id
         )
-        return add_file_to_assistant.id
+        # return add_file_to_assistant.id
+    
+    def list_files(self):
+        assistant_files = self.client.beta.assistants.files.list(
+            assistant_id=self.assistant_id
+        )
+        return assistant_files
+    
+    def show_filed_uplaoded(self):
+        assisant_files = self.list_files()
+        file_list = []
+        for i in assisant_files:
+            file_list.append(i.id)
+        return file_list
+    
+    def delete_file(self):
+        file_list = self.show_filed_uplaoded()
+        convert_to_string = ' '.join(file_list)
+        delete_file = self.client.beta.assistants.files.delete(
+            assistant_id = self.assistant_id,
+            file_id = convert_to_string
+        )
 
+        # return delete_file
 
     def attach_message_to_thread(self, user_question):
         self.client.beta.threads.messages.create(
