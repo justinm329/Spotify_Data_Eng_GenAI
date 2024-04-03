@@ -33,7 +33,7 @@ with DAG('spotify_extract', default_args=default_args,
     
     # task_a = PythonOperator(task_id='spotify_a', python_callable = extract_spotify)
 
-    task_b = BashOperator(task_id = 'spotify_b', bash_command='dbt build --select +MAIN_SPOTIFY --profiles-dir ~/.dbt'
+    task_b = BashOperator(task_id = 'spotify_b', bash_command= f'dbt build --select +{main_data_model}'
 )
 
 task_b
