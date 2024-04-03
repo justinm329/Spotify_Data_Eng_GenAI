@@ -215,29 +215,21 @@ class Spotify():
                 raise Exception(f"Error in API request: {response.status_code}")
         track_audio_features_df = pd.DataFrame(track_audio_features)
         return track_audio_features_df
+## def write_to_sf(access_token, playlist_ids):
+    ######### CREATE CONNECTION TO SNOWFLAKE AND WRITE THE TABLES TO THE SPOTIFY_SCHEMA #################
+    def write_to_sf(self, playlist_ids = spotify_playlist_ids):
+        spotify = Spotify(self.access_token)
+        config = Config()
+        sf_conn = config.create_sf_conn()
+        playlist_df = spotify.get_playlist_name_tracks(playlist_ids)
+        track_ids_list = playlist_df['Track_Id'].to_list()
+        track_information = spotify.get_track_information(track_ids_list)
+        audio_features_df = spotify.get_track_audio_features(track_ids_list)
+        config.drop_and_recreate(sf_conn, playlist_df, "RAW_ALL_PLAYLISTS")
+        config.drop_and_recreate(sf_conn, track_information, "RAW_TRACK_INFORMATION")
+        config.drop_and_recreate(sf_conn, audio_features_df, "RAW_AUDIO_FEATURES")
+        write_pandas(sf_conn, playlist_df, "RAW_History_of_Playlists",  auto_create_table = True)
+        write_pandas(sf_conn, audio_features_df, "RAW_History_of_Audio_Features",  auto_create_table = True)
+        write_pandas(sf_conn, track_information, "RAW_History_of_Track_Information",  auto_create_table = True)
+        config.close_sf_conn(sf_conn)
 
-######### CREATE CONNECTION TO SNOWFLAKE AND WRITE THE TABLES TO THE SPOTIFY_SCHEMA #################
-def write_to_sf(access_token, playlist_ids):
-    spotify = Spotify(access_token)
-    config = Config()
-    sf_conn = config.create_sf_conn()
-    playlist_df = spotify.get_playlist_name_tracks(playlist_ids)
-    track_ids_list = playlist_df['Track_Id'].to_list()
-    #time.sleep(30)
-    track_information = spotify.get_track_information(track_ids_list)
-    #time.sleep(60)
-    audio_features_df = spotify.get_track_audio_features(track_ids_list)
-    #time.sleep(30)
-    #write_pandas(sf_conn, playlist_df, "ALL_PLAYLISTS", auto_create_table = True)
-    config.drop_and_recreate(sf_conn, playlist_df, "RAW_ALL_PLAYLISTS")
-    config.drop_and_recreate(sf_conn, track_information, "RAW_TRACK_INFORMATION")
-    config.drop_and_recreate(sf_conn, audio_features_df, "RAW_AUDIO_FEATURES")
-    write_pandas(sf_conn, playlist_df, "RAW_History_of_Playlists",  auto_create_table = True)
-    write_pandas(sf_conn, audio_features_df, "RAW_History_of_Audio_Features",  auto_create_table = True)
-    write_pandas(sf_conn, track_information, "RAW_History_of_Track_Information",  auto_create_table = True)
-    #config.drop_and_recreate(sf_conn, track_information, "TRACK_INFORMATION")
-    #write_pandas(sf_conn, track_information, "TRACK_INFORMATION",  auto_create_table = True)
-    #write_pandas(sf_conn, audio_features_df, "AUDIO_FEATURES",  auto_create_table = True)
-    config.close_sf_conn(sf_conn)
-
-write_to_sf(access_token=access_token, playlist_ids = spotify_playlist_ids)
