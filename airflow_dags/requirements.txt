@@ -9,4 +9,6 @@ apache-airflow-providers-snowflake==5.2.0
 snowflake-snowpark-python[pandas]==1.11.1
 git+https://github.com/astronomer/astro-provider-snowflake.git
 dbt-snowflake
+astronomer-cosmos==1.0.4
+
 
