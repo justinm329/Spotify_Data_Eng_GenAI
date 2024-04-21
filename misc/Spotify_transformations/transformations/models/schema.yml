@@ -1,0 +1,111 @@
+version: 2
+
+models:
+
+  - name: all_playlists_refined
+    description: 'This model is being renamed from the raw model all_playlists which was dumped in from the spotify api'
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+          - track_id
+          - playlist_id
+    columns:
+      - name: track_id
+        tests:
+          - not_null
+      - name: artists_names
+      - name: playlist_id
+        tests:
+          - not_null
+      - name: playlist_name
+      - name: track_name
+      - name: artist_id
+  
+  - name: audio_features_refined
+    description: 'This model is being renamed from the raw model audio_features which was dumped in from the spotify api'
+    columns:
+      - name: track_id
+        tests:
+          - not_null
+          - unique
+      - name: danceability
+      - name: duration_ms
+      - name: energy
+      - name: instrumentalness
+      - name: song_key
+      - name: liveness
+      - name: loudness
+      - name: mode
+      - name: speechiness
+      - name: time_signature
+      - name: tack_uri
+
+  - name: history_all_playlists_refined
+    description: 'This model is being renamed from the raw model history_of_playlists which was dumped in from the spotify api'
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+          - track_id
+          - playlist_id
+          - refreshed_date
+    columns:
+      - name: track_id
+        tests:
+          - not_null
+      - name: artists_names
+      - name: playlist_id
+        tests:
+          - not_null
+      - name: playlist_name
+      - name: track_name
+      - name: artist_id
+      - name: refreshed_date
+  
+  - name: track_information_refined
+    description: 'This model is being renamed from the raw model track information which was dumped in from the spotify api'
+    columns:
+      - name: track_id
+        tests:
+          - not_null
+          - unique
+      - name: track_name
+      - name: track_popularity
+      - name: tack_uri
+  
+  - name: main_spotify
+    description: 'This model is created from the refined models'
+    tests:
+    - dbt_utils.unique_combination_of_columns:
+        combination_of_columns:
+        - track_id
+        - playlist_id
+    columns:
+      - name: track_id
+        tests:
+          - not_null
+      - name: playlist_id
+        tests:
+          - not_null
+      - name: playlist_name
+      - name: track_name
+      - name: artists_names
+      - name: danceability
+      - name: duration_ms
+      - name: energy
+      - name: instrumentalness
+      - name: song_key
+      - name: liveness
+      - name: loudness
+      - name: speechiness
+
+sources:
+  - name: analytics_justin_spotify_schema
+    description: "DB Anlaytics_Jusitn and schema Spotify_Schema"
+    database: analytics_justin
+    schema: spotify_schema
+    tables:
+      - name: all_playlists_refined
+      - name: audio_features_refined
+      - name: track_information_refined
+      - name: history_all_playlists_refined
+      - name: main_spotify

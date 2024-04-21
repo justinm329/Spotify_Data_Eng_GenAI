@@ -146,7 +146,7 @@ class Spotify():
 
         # Create a DataFrame from the collected data
             playlist_df = pd.DataFrame(all_playlists_data)
-        return playlist_df
+        return playlist_df, track_data
 
     def get_track_information(self, track_ids):
         track_data_list = []

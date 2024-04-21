@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: analytics_justin_spotify_schema
+    description: "RAW Data sources"
+    database: analytics_justin
+    schema: spotify_schema
+    tables:
+        - name: "RAW_ALL_PLAYLISTS"
+        - name: "RAWAUDIOFEATURES"
+        - name: "raw_track_information"
+        - name: "raw_history_playlists"

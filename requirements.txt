@@ -4,3 +4,6 @@ openai
 numpy
 pyarrow
 requests
+dbt-snowflake
+astronomer-cosmos==1.0.4
+spotipy
